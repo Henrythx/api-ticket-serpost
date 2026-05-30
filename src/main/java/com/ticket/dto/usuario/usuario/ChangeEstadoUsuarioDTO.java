@@ -1,4 +1,4 @@
-package com.ticket.dto.usuario;
+package com.ticket.dto.usuario.usuario;
 
 import jakarta.validation.constraints.NotNull;
 

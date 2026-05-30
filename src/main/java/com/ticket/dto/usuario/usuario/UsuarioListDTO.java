@@ -1,4 +1,4 @@
-package com.ticket.dto.usuario;
+package com.ticket.dto.usuario.usuario;
 
 public class UsuarioListDTO {
     private Long idUsuario;

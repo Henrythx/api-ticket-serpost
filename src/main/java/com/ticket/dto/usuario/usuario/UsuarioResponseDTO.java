@@ -1,8 +1,8 @@
-package com.ticket.dto.usuario;
+package com.ticket.dto.usuario.usuario;
 
 import java.time.LocalDateTime;
 
-public class UsuarioReponseDTO {
+public class UsuarioResponseDTO {
     private Long idUsuario;
     private String nombre;
     private String apellido;

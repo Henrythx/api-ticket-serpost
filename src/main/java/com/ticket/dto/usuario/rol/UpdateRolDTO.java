@@ -1,40 +1,36 @@
-package com.ticket.dto.usuario.area;
+package com.ticket.dto.usuario.rol;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class UpdateAreaDTO {
+public class UpdateRolDTO {
+    @NotNull(message = "El ID del rol es obligatorio")
+    private Long idRol;
 
-    private Long idArea;
-
-    @NotBlank(message = "El nombre del área es obligatorio")
+    @NotBlank(message = "El nombre del rol es obligatorio")
     private String nombre;
 
     @Size(max = 255, message = "La descripción no puede superar los 255 caracteres")
     private String descripcion;
-
-    @NotNull(message = "El estado activo es obligatorio")
-    private Boolean activo;
 
 
 
     
     @Override
     public String toString() {
-        return "UpdateAreaDTO [idArea=" + idArea + ", nombre=" + nombre + ", descripcion=" + descripcion + ", activo="
-                + activo + "]";
+        return "UpdateRolDTO [idRol=" + idRol + ", nombre=" + nombre + ", descripcion=" + descripcion + "]";
     }
 
 
+    
 
-
-    public Long getIdArea() {
-        return idArea;
+    public Long getIdRol() {
+        return idRol;
     }
 
-    public void setIdArea(Long idArea) {
-        this.idArea = idArea;
+    public void setIdRol(Long idRol) {
+        this.idRol = idRol;
     }
 
     public String getNombre() {
@@ -51,13 +47,5 @@ public class UpdateAreaDTO {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    public Boolean getActivo() {
-        return activo;
-    }
-
-    public void setActivo(Boolean activo) {
-        this.activo = activo;
     }
 }
