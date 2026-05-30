@@ -23,17 +23,17 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.crearUsuario(dto));
     }
 
+    @PatchMapping("/estado/cambiar")
+    public ResponseEntity<Void> cambiarEstado(@Valid @RequestBody ChangeEstadoUsuarioDTO dto) {
+        usuarioService.cambiarEstadoUsuario(dto);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<UsuarioResponseDTO> actualizarUsuario(@PathVariable Long id,
                                                                 @Valid @RequestBody UpdateUsuarioDTO dto) {
         dto.setIdUsuario(id);
         return ResponseEntity.ok(usuarioService.actualizarUsuario(dto));
-    }
-
-    @PatchMapping("/estado")
-    public ResponseEntity<Void> cambiarEstado(@Valid @RequestBody ChangeEstadoUsuarioDTO dto) {
-        usuarioService.cambiarEstadoUsuario(dto);
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
