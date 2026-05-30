@@ -1,14 +1,21 @@
 package com.ticket.services.impl;
 
 import com.ticket.dto.usuario.usuario.*;
+import com.ticket.model.usuario.AreaEntity;
+import com.ticket.model.usuario.RolEntity;
 import com.ticket.model.usuario.UsuarioEntity;
+import com.ticket.repositories.jpa.AreaRepository;
+import com.ticket.repositories.jpa.RolRepository;
 import com.ticket.repositories.jpa.UsuarioRepository;
 import com.ticket.model.CustomError;
 import com.ticket.services.interfaces.UsuarioService;
 
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,32 +25,54 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private AreaRepository areaRepository;
+
+    @Autowired
+    private RolRepository rolRepository;
+
     @Override
+    @Transactional
     public UsuarioResponseDTO crearUsuario(CreateUsuarioDTO dto) {
         if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw CustomError.conflict("Email ya registrado", "UsuarioServiceImpl", "Duplicado");
         }
+        
         UsuarioEntity entity = new UsuarioEntity();
         entity.setNombre(dto.getNombre());
         entity.setApellido(dto.getApellido());
         entity.setEmail(dto.getEmail());
         entity.setPassword(dto.getPassword());
-        // set area y rol con repositorios si corresponde
-        UsuarioEntity saved = usuarioRepository.save(entity);
-        return toResponseDTO(saved);
+        entity.setActivo(true);
+        entity.setCreadoEn(LocalDateTime.now()); // Corregido: Se asigna ANTES de guardar
+
+        this.asignarRelaciones(entity, dto.getIdArea(), dto.getIdRol());
+
+        return toResponseDTO(usuarioRepository.save(entity));
     }
 
     @Override
+    @Transactional
     public UsuarioResponseDTO actualizarUsuario(UpdateUsuarioDTO dto) {
         UsuarioEntity entity = usuarioRepository.findById(dto.getIdUsuario())
                 .orElseThrow(() -> CustomError.notFound("Usuario no encontrado", "UsuarioServiceImpl"));
         entity.setNombre(dto.getNombre());
         entity.setApellido(dto.getApellido());
         entity.setEmail(dto.getEmail());
-        // actualizar área y rol
-        UsuarioEntity updated = usuarioRepository.save(entity);
-        return toResponseDTO(updated);
+        
+        this.asignarRelaciones(entity, dto.getIdArea(), dto.getIdRol());
+        
+        return toResponseDTO(usuarioRepository.save(entity));
     }
+
+
+
+
+
+
+
+
+
 
     @Override
     public void cambiarEstadoUsuario(ChangeEstadoUsuarioDTO dto) {
@@ -59,6 +88,14 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElseThrow(() -> CustomError.notFound("Usuario no encontrado", "UsuarioServiceImpl"));
         return toResponseDTO(entity);
     }
+
+
+
+
+
+
+
+
 
     @Override
     public List<UsuarioListDTO> listarUsuarios() {
@@ -88,6 +125,25 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .collect(Collectors.toList());
     }
 
+
+
+
+
+
+
+
+    // Método privado auxiliar para evitar duplicar código de asignación
+    private void asignarRelaciones(UsuarioEntity entity, Long idArea, Long idRol) {
+        if (idArea != null && idArea > 0) {
+            AreaEntity area = areaRepository.findById(idArea).orElse(null); // Corregido orElseGet
+            entity.setArea(area);
+        }
+        if (idRol != null && idRol > 0) {
+            RolEntity rol = rolRepository.findById(idRol).orElse(null); // Corregido orElseGet
+            entity.setRol(rol);
+        }
+    }
+
     private UsuarioResponseDTO toResponseDTO(UsuarioEntity entity) {
         UsuarioResponseDTO dto = new UsuarioResponseDTO();
         dto.setIdUsuario(entity.getIdUsuario());
@@ -95,7 +151,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         dto.setApellido(entity.getApellido());
         dto.setEmail(entity.getEmail());
         dto.setActivo(entity.getActivo());
-        // set areaNombre y rolNombre si corresponde
+        dto.setCreadoEn(entity.getCreadoEn());
+
+        if(entity.getArea() != null) dto.setAreaNombre(entity.getArea().getNombre());
+        if(entity.getRol() != null) dto.setRolNombre(entity.getRol().getNombre());
         return dto;
     }
 
@@ -106,6 +165,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         dto.setApellido(entity.getApellido());
         dto.setEmail(entity.getEmail());
         dto.setActivo(entity.getActivo());
+
+        if(entity.getArea() != null) dto.setAreaNombre(entity.getArea().getNombre());
+        if(entity.getRol() != null) dto.setRolNombre(entity.getRol().getNombre());
+
         return dto;
     }
 }

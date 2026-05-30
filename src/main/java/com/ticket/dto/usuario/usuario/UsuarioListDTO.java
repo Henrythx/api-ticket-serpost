@@ -6,19 +6,21 @@ public class UsuarioListDTO {
     private String apellido;
     private String email;
     private Boolean activo;
+    private String areaNombre;
+    private String rolNombre;
 
 
     
-
+    
     @Override
     public String toString() {
         return "UsuarioListDTO [idUsuario=" + idUsuario + ", nombre=" + nombre + ", apellido=" + apellido + ", email="
-                + email + ", activo=" + activo + "]";
+                + email + ", activo=" + activo + ", areaNombre=" + areaNombre + ", rolNombre=" + rolNombre + "]";
     }
 
 
 
-    
+
     public Long getIdUsuario() {
         return idUsuario;
     }
@@ -49,5 +51,22 @@ public class UsuarioListDTO {
     public void setActivo(Boolean activo) {
         this.activo = activo;
     }
+
+    public String getAreaNombre() {
+        return areaNombre;
+    }
+
+    public void setAreaNombre(String areaNombre) {
+        this.areaNombre = areaNombre;
+    }
+
+    public String getRolNombre() {
+        return rolNombre;
+    }
+
+    public void setRolNombre(String rolNombre) {
+        this.rolNombre = rolNombre;
+    }
+    
 }
 

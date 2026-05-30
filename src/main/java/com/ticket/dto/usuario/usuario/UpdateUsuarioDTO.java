@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 
 public class UpdateUsuarioDTO {
 
-    @NotNull(message = "El ID de usuario es obligatorio")
     private Long idUsuario;
 
     @NotBlank(message = "El nombre es obligatorio")
