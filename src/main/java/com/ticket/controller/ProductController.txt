@@ -1,0 +1,86 @@
+// package com.tickek.controller;
+
+// import java.util.List;
+// import java.util.Optional;
+
+// import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.http.HttpStatus;
+// import org.springframework.http.ResponseEntity;
+// import org.springframework.web.bind.annotation.RestController;
+
+// import com.tickek.domain.model.Product;
+// import com.tickek.domain.services.ProductService;
+
+// import org.springframework.web.bind.annotation.DeleteMapping;
+// import org.springframework.web.bind.annotation.GetMapping;
+// import org.springframework.web.bind.annotation.PathVariable;
+// import org.springframework.web.bind.annotation.PostMapping;
+// import org.springframework.web.bind.annotation.PutMapping;
+// import org.springframework.web.bind.annotation.RequestBody;
+// import org.springframework.web.bind.annotation.RequestMapping;
+
+
+
+// @RestController
+// @RequestMapping("/api/products")
+// public class ProductController {
+
+//     @Autowired
+//     private ProductService service;
+
+
+
+
+//     @GetMapping("")
+//     public List<Product> findAll(){
+//         return service.findAll();
+//     }
+
+
+
+
+//     @GetMapping("/{id}")
+//     public ResponseEntity<?> findById(@PathVariable Long id){
+//         Optional<Product> obj = service.findById(id);
+
+//         if(obj.isPresent()){
+//             return ResponseEntity.ok().body(obj.get());
+//         }        
+//         return ResponseEntity.notFound().build();
+//     }
+
+
+
+
+//     @PostMapping()
+//     public ResponseEntity<Product> create(@RequestBody Product product){        
+//         System.out.println("creando"+product);
+//         Product obj = service.save(product);
+//         return ResponseEntity.status(HttpStatus.CREATED).body(obj);
+//     }
+
+
+
+
+//     @PutMapping("/{id}")
+//     public ResponseEntity<Product> updated(@PathVariable Long id, @RequestBody Product product){
+//         System.out.println("actualizando");
+//         product.setId(id);
+//         Product obj = service.update(product);
+//         return ResponseEntity.status(HttpStatus.CREATED).body(obj);
+//     }
+
+
+
+
+//     @DeleteMapping("/{id}")
+//     public ResponseEntity<?> deleted(@PathVariable Long id){
+//         Product obj = service.delete(id);
+
+//         if(obj != null){
+//             return ResponseEntity.ok().body(obj);
+//         }
+//         return ResponseEntity.notFound().build();
+//     }
+    
+// }
