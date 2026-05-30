@@ -1,4 +1,4 @@
-package com.ticket.services.impl;
+package com.ticket.services.impl.usuario;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.ticket.dto.usuario.area.*;
 import com.ticket.model.CustomError;
 import com.ticket.model.usuario.AreaEntity;
-import com.ticket.repositories.jpa.AreaRepository;
+import com.ticket.repositories.usuario.AreaRepository;
 import com.ticket.services.interfaces.AreaService;
 
 @Service

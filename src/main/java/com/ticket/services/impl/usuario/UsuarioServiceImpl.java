@@ -1,12 +1,12 @@
-package com.ticket.services.impl;
+package com.ticket.services.impl.usuario;
 
 import com.ticket.dto.usuario.usuario.*;
 import com.ticket.model.usuario.AreaEntity;
 import com.ticket.model.usuario.RolEntity;
 import com.ticket.model.usuario.UsuarioEntity;
-import com.ticket.repositories.jpa.AreaRepository;
-import com.ticket.repositories.jpa.RolRepository;
-import com.ticket.repositories.jpa.UsuarioRepository;
+import com.ticket.repositories.usuario.AreaRepository;
+import com.ticket.repositories.usuario.RolRepository;
+import com.ticket.repositories.usuario.UsuarioRepository;
 import com.ticket.model.CustomError;
 import com.ticket.services.interfaces.UsuarioService;
 
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {

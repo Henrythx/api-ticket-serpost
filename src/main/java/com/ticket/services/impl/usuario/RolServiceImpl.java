@@ -1,8 +1,8 @@
-package com.ticket.services.impl;
+package com.ticket.services.impl.usuario;
 
 import com.ticket.dto.usuario.rol.*;
 import com.ticket.model.usuario.RolEntity;
-import com.ticket.repositories.jpa.RolRepository;
+import com.ticket.repositories.usuario.RolRepository;
 import com.ticket.model.CustomError;
 import com.ticket.services.interfaces.RolService;
 

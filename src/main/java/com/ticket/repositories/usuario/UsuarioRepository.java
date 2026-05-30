@@ -1,4 +1,4 @@
-package com.ticket.repositories.jpa;
+package com.ticket.repositories.usuario;
 
 import com.ticket.model.usuario.UsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
