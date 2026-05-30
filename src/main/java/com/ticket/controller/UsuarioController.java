@@ -41,6 +41,12 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.obtenerUsuarioPorId(id));
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+        usuarioService.eliminarUsuario(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public ResponseEntity<List<UsuarioListDTO>> listarUsuarios() {
         return ResponseEntity.ok(usuarioService.listarUsuarios());

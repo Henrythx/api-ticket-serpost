@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ticket.model.notificacion.NotificacionEntity;
+import com.ticket.model.usuario.AreaEntity;
 import com.ticket.model.usuario.UsuarioEntity;
 
 import jakarta.persistence.Entity;
@@ -26,6 +27,9 @@ public class TicketEntity {
 
     @ManyToOne @JoinColumn(name = "id_usuario_tecnico")
     private UsuarioEntity usuarioTecnico;
+
+    @ManyToOne @JoinColumn(name = "id_area")
+    private AreaEntity area;
 
     @ManyToOne @JoinColumn(name = "id_categoria")
     private CategoriaTicketEntity categoria;
@@ -92,6 +96,14 @@ public class TicketEntity {
 
     public void setUsuarioTecnico(UsuarioEntity usuarioTecnico) {
         this.usuarioTecnico = usuarioTecnico;
+    }
+
+    public AreaEntity getArea() {
+        return area;
+    }
+
+    public void setArea(AreaEntity area) {
+        this.area = area;
     }
 
     public CategoriaTicketEntity getCategoria() {

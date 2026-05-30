@@ -8,11 +8,14 @@ import com.ticket.repositories.jpa.AreaRepository;
 import com.ticket.repositories.jpa.RolRepository;
 import com.ticket.repositories.jpa.UsuarioRepository;
 import com.ticket.model.CustomError;
+import com.ticket.services.interfaces.AuditoriaService;
 import com.ticket.services.interfaces.UsuarioService;
 
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,24 +34,34 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Autowired
     private RolRepository rolRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuditoriaService auditoriaService;
+
     @Override
     @Transactional
     public UsuarioResponseDTO crearUsuario(CreateUsuarioDTO dto) {
         if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw CustomError.conflict("Email ya registrado", "UsuarioServiceImpl", "Duplicado");
         }
-        
+
         UsuarioEntity entity = new UsuarioEntity();
         entity.setNombre(dto.getNombre());
         entity.setApellido(dto.getApellido());
         entity.setEmail(dto.getEmail());
-        entity.setPassword(dto.getPassword());
+        // La contraseña se almacena cifrada con BCrypt, nunca en texto plano.
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         entity.setActivo(true);
         entity.setCreadoEn(LocalDateTime.now()); // Corregido: Se asigna ANTES de guardar
 
         this.asignarRelaciones(entity, dto.getIdArea(), dto.getIdRol());
 
-        return toResponseDTO(usuarioRepository.save(entity));
+        UsuarioResponseDTO creado = toResponseDTO(usuarioRepository.save(entity));
+        auditoriaService.registrarActorActual(AuditoriaService.CREAR_USUARIO,
+                "Usuario #" + creado.getIdUsuario(), "Creó al usuario " + creado.getEmail());
+        return creado;
     }
 
     @Override
@@ -59,10 +72,14 @@ public class UsuarioServiceImpl implements UsuarioService {
         entity.setNombre(dto.getNombre());
         entity.setApellido(dto.getApellido());
         entity.setEmail(dto.getEmail());
-        
+
         this.asignarRelaciones(entity, dto.getIdArea(), dto.getIdRol());
-        
-        return toResponseDTO(usuarioRepository.save(entity));
+
+        UsuarioResponseDTO actualizado = toResponseDTO(usuarioRepository.save(entity));
+        auditoriaService.registrarActorActual(AuditoriaService.MODIFICACION,
+                "Usuario #" + actualizado.getIdUsuario(),
+                "Modificó los datos de " + actualizado.getEmail());
+        return actualizado;
     }
 
 
@@ -80,6 +97,31 @@ public class UsuarioServiceImpl implements UsuarioService {
                 .orElseThrow(() -> CustomError.notFound("Usuario no encontrado", "UsuarioServiceImpl"));
         entity.setActivo(dto.getActivo());
         usuarioRepository.save(entity);
+        auditoriaService.registrarActorActual(AuditoriaService.MODIFICACION,
+                "Usuario #" + entity.getIdUsuario(),
+                (Boolean.TRUE.equals(dto.getActivo()) ? "Activó" : "Inactivó") + " la cuenta "
+                        + entity.getEmail());
+    }
+
+    @Override
+    @Transactional
+    public void eliminarUsuario(Long idUsuario) {
+        UsuarioEntity entity = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> CustomError.notFound("Usuario no encontrado", "UsuarioServiceImpl"));
+        String email = entity.getEmail();
+        try {
+            // flush fuerza el DELETE para capturar aquí una posible violación de
+            // integridad referencial (usuario con tickets/historial asociados).
+            usuarioRepository.delete(entity);
+            usuarioRepository.flush();
+        } catch (DataIntegrityViolationException ex) {
+            throw CustomError.conflict(
+                    "No se puede eliminar: el usuario tiene tickets o registros asociados. "
+                            + "Inactívelo en su lugar.",
+                    "UsuarioServiceImpl", "FK-constraint");
+        }
+        auditoriaService.registrarActorActual(AuditoriaService.ELIMINACION,
+                "Usuario #" + idUsuario, "Eliminó al usuario " + email);
     }
 
     @Override

@@ -23,6 +23,7 @@ public class SlaEntity {
 
     private Integer tiempoAtencion;
     private Integer tiempoResolucion;
+    private Boolean activo;
 
 
 
@@ -71,6 +72,12 @@ public class SlaEntity {
     }
     public void setTiempoResolucion(Integer tiempoResolucion) {
         this.tiempoResolucion = tiempoResolucion;
+    }
+    public Boolean getActivo() {
+        return activo;
+    }
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 
     
