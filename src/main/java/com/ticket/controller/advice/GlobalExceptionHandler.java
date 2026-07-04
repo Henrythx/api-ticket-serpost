@@ -46,6 +46,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
+    /* 
     // Manejo de excepciones generales
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGeneralException(Exception ex) {
@@ -55,5 +56,5 @@ public class GlobalExceptionHandler {
         body.put("error", "Error interno del servidor");
         body.put("details", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-    }
+    }*/
 }
